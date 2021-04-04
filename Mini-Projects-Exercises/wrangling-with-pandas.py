@@ -150,3 +150,95 @@ print(top3)
 # Section II - Q2: # Plot the total number of films released per-decade (1890, 1900, 1910,....)
 # Hint: Dividing the year and multiplying with a number might give you the decade the year falls into!
 # You might need to sort before plotting
+
+moviesByDecadeDf = movies.groupby(movies.year//10 * 10).sum()
+moviesByDecadeDf.plot(kind = "bar");
+
+
+# Section II - Q3:
+# (A) What are the top 10 most common character names in movie history?
+cast.character.value_counts()[:10]
+
+# (B) Who are the top 10 people most often credited as "Herself" in movie history?
+cast[cast.character == 'Herself']['name'].value_counts()[:10]
+
+# (C) Who are the top 10 people most often credited as "Himself" in movie history?
+cast[cast.character == 'Himself']['name'].value_counts()[:10]
+
+# Section II - Q4:
+# Hint: The startswith() function might be useful
+# (A) What are the top 10 most frequent roles that start with the word "Zombie"?
+cast[cast.character.str.startswith('Zombie')].character.value_counts().head(10)
+# (B) What are the top 10 most frequent roles that start with the word "Police"?
+cast[cast.character.str.startswith('Police')].character.value_counts().head(10)
+
+# Section II - Q5: Plot how many roles 'Keanu Reeves' has played in each year of his career.
+keanu_movies = cast[cast.name == "Keanu Reeves"]
+keanu_movies.groupby("year").plot(kind='barh')
+
+# Section II - Q6: Plot the cast positions (n-values) of Keanu Reeve's roles through his career over the years.
+# keanu_movies.groupby("year")["n"].count().plot(kind="bar", figsize = (10,5))
+keanu = cast[(cast.name == 'Keanu Reeves') & (pd.notnull(cast.n))][['year', 'n']].sort_values('year')
+keanu.plot(x='year', y='n', kind='scatter')
+
+# Section II - Q7: Plot the number of "Hamlet" films made by each decade
+hamlet = (movies[movies.title == 'Hamlet'].groupby(movies.year // 10 * 10).count().rename({'title': 'count'}, axis=1))['count']
+hamlet.plot(kind='bar')
+
+# Section II - Q8:
+# Hint: A specific value of n might indicate a leading role
+# (A) How many leading roles were available to both actors and actresses, in the 1960s (1960-1969)?
+print (cast[(cast.year.between(1960, 1969)) & (cast.n == 1)].groupby(['year', 'type']).count()[['title']].rename({'title': 'count'}, axis=1))
+# (B) How many leading roles were available to both actors and actresses, in the 2000s (2000-2009)?
+print (cast[(cast.year.between(2000, 2009)) & (cast.n == 1)].groupby(['year', 'type']).count()[['title']].rename({'title': 'count'}, axis=1))
+
+# Section II - Q9: List, in order by year, each of the films in which Frank Oz has played more than 1 role
+frankOz = (cast[cast.name == 'Frank Oz'].groupby(['year', 'title']).count()[['name']].rename({'name': 'freq'}, axis=1)
+         .sort_values(by=['year'], ascending=True))
+print(frankOz[frankOz.freq > 1])
+
+
+# Section II - Q10: List each of the characters that Frank Oz has portrayed at least twice
+frankOz = cast[cast.name == 'Frank Oz'].groupby(['character']).count()[['name']].rename({'name': 'freq'}, axis=1)
+print(frankOz[frankOz.freq > 1])
+
+
+# Section III - Advanced Merging, Querying and Visualizations
+# Make a bar plot with the following conditions
+# Frequency of the number of movies with "Christmas" in their title
+# Movies should be such that they are released in the USA.
+# Show the frequency plot by month
+christmas = release_dates[(release_dates.title.str.contains('Christmas')) & (release_dates.country == 'USA')]
+print(christmas.date.dt.month.value_counts().sort_index().plot(kind='bar'))
+
+
+# Section III - Q1: Make a bar plot with the following conditions
+# Frequency of the number of movies with "Summer" in their title
+# Movies should be such that they are released in the USA.
+# Show the frequency plot by month
+summer = release_dates[(release_dates.title.str.contains('Summer')) & (release_dates.country == 'USA')]
+print(summer.date.dt.month.value_counts().sort_index().plot(kind='bar'))
+
+# Section III - Q2: Make a bar plot with the following conditions
+# Frequency of the number of movies with "Action" in their title
+# Movies should be such that they are released in the USA.
+# Show the frequency plot by week
+action = release_dates[(release_dates.title.str.contains('Summer')) & (release_dates.country == 'USA')]
+print(action.date.dt.dayofweek.value_counts().sort_index().plot(kind='bar'))
+
+# Section III - Q3: Show all the movies in which Keanu Reeves has played the lead role along with their release date in the USA sorted by the date of release
+# Hint: You might need to join or merge two datasets!
+keanu_movies = cast[cast.name == "Keanu Reeves"]
+usa_release = release_dates[(release_dates.country == 'USA')]
+merged_usa_keanu = keanu_movies.merge(usa_release, how = "left", on = ["title", "year"])
+print(merged_usa_keanu[merged_usa_keanu.n == 1].sort_values(by = "date"))
+
+# Section III - Q4: Make a bar plot showing the months in which movies with Keanu Reeves tend to be released in the USA?
+merged_usa_keanu.date.dt.month.value_counts().sort_index().plot(kind='bar')
+
+# Section III - Q5: Make a bar plot showing the years in which movies with Ian McKellen tend to be released in the USA?
+ian_mckellen_movies = cast[cast.name == "Ian McKellen"]
+merged_usa_ian_mckellen = ian_mckellen_movies.merge(usa_release, how = "left", on = ["title", "year"])
+merged_usa_ian_mckellen.date.dt.year.value_counts().sort_index().plot(kind='bar')
+
+plt.show()
