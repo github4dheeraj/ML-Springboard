@@ -8,7 +8,7 @@ pd.__version__
 # Taking a look at the Movies dataset
 # This data shows the movies based on their title and the year of release
 
-movies = pd.read_csv('titles.csv')
+movies = pd.read_csv('data/titles.csv')
 movies.info()
 
 movies.head()
@@ -18,13 +18,13 @@ movies.head()
 #
 # The attribute n basically tells the importance of the cast role, lower the number, more important the role.
 # Supporting cast usually don't have any value for n
-cast = pd.read_csv('cast.csv')
+cast = pd.read_csv('data/cast.csv')
 cast.info()
 cast.head(10)
 
 # Taking a look at the Release dataset
 # This data shows details of when each movie was release in each country with the release date
-release_dates = pd.read_csv('release_dates.csv', parse_dates=['date'], infer_datetime_format=True)
+release_dates = pd.read_csv('data/release_dates.csv', parse_dates=['date'], infer_datetime_format=True)
 release_dates.info()
 release_dates.head()
 
