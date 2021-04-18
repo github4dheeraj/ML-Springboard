@@ -117,16 +117,16 @@ full_monte['info'].str.get_dummies('|')
 # The database is in JSON format, so we will try pd.read_json to read it:
 
 try:
-    recipes = pd.read_json('data/recipeitems-latest.json')
+    recipes = pd.read_json('data-wrangling-exercises/data/recipeitems-latest.json')
 except ValueError as e:
     print("ValueError:", e)
 
-with open('data/recipeitems-latest.json') as f:
+with open('data-wrangling-exercises/data/recipeitems-latest.json') as f:
     line = f.readline()
 pd.read_json(line).shape
 
 # read the entire file into a Python array
-with open('data/recipeitems-latest.json', 'r') as f:
+with open('data-wrangling-exercises/data/recipeitems-latest.json', 'r') as f:
     # Extract each line
     data = (line.strip() for line in f)
     # Reformat so each line is the element of a list

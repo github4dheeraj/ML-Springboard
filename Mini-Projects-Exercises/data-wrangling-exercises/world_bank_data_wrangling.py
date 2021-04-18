@@ -37,11 +37,11 @@ json_normalize(data, 'counties', ['state', 'shortname', ['info', 'governor']])
 # uses small sample file containing data about projects funded by the World Bank
 # data source: http://jsonstudio.com/resources/
 # load json as string
-json.load((open('data/world_bank_projects_less.json')))
+json.load((open('data-wrangling-exercises/data/world_bank_projects_less.json')))
 
 
 # load as Pandas dataframe
-wb_json_df = pd.read_json('data/world_bank_projects.json')
+wb_json_df = pd.read_json('data-wrangling-exercises/data/world_bank_projects.json')
 print(wb_json_df)
 
 
