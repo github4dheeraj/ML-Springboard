@@ -198,7 +198,7 @@ print(pd.date_range('2015-07-01', periods=5, freq=BDay()))
 
 import pandas_datareader as data
 
-goog = data.DataReader('GOOG', start='2004', end='2016', data_source='yahoo')
+goog = data.DataReader('GOOG', start='2004', end='2016', data_source='google')
 goog.head()
 # Open	High	Low	Close	Volume
 # Date
@@ -216,7 +216,7 @@ goog = goog['Close']
 
 import matplotlib.pyplot as plt
 import seaborn; seaborn.set()
-goog.plot()
+goog.plot();
 
 # Resampling and converting frequencies
 # One common need for time series data is resampling at a higher or lower frequency. This can be done using the resample() method, or the much simpler asfreq() method. The primary difference between the two is that resample() is fundamentally a data aggregation, while asfreq() is fundamentally a data selection.
@@ -314,7 +314,7 @@ ax.lines[0].set_alpha(0.3)
 # # !curl -o FremontBridge.csv https://data.seattle.gov/api/views/65db-xm6k/rows.csv?accessType=DOWNLOAD
 # Once this dataset is downloaded, we can use Pandas to read the CSV output into a DataFrame. We will specify that we want the Date as an index, and we want these dates to be automatically parsed:
 
-data = pd.read_csv('./data/FremontBridge.csv', index_col='Date', parse_dates=True)
+data = pd.read_csv('FremontBridge.csv', index_col='Date', parse_dates=True)
 data.head()
 
 # For convenience, we'll further process this dataset by shortening the column names and adding a "Total" column:
@@ -378,7 +378,7 @@ by_time = data.groupby([weekend, data.index.time]).mean()
 
 import matplotlib.pyplot as plt
 fig, ax = plt.subplots(1, 2, figsize=(14, 5))
-by_time.loc['Weekday'].plot(ax=ax[0], title='Weekdays',
+by_time.ix['Weekday'].plot(ax=ax[0], title='Weekdays',
                            xticks=hourly_ticks, style=[':', '--', '-'])
-by_time.loc['Weekend'].plot(ax=ax[1], title='Weekends',
+by_time.ix['Weekend'].plot(ax=ax[1], title='Weekends',
                            xticks=hourly_ticks, style=[':', '--', '-']);
