@@ -23,8 +23,8 @@ def getKaggleNewsDataSet():
     fake = pd.read_csv("data/Fake.csv")
     true = pd.read_csv("data/True.csv")
     # add a field to determine fake and real
-    fake['isFake'] = 1
-    true['isFake'] = 0
+    fake['label'] = 0
+    true['label'] = 1
     # combine
     data = pd.concat([fake, true]).reset_index(drop = True)
     # suffle to prevent bias
@@ -39,22 +39,22 @@ def getKaggleNewsDataSet():
 def getReserachArticleNewsDataSet():
     data_dir = "data/research-data/"
     rd = pd.read_csv(data_dir+"researcharticles.csv", sep=',', names=["id", "url", "source", "desc"])
-    fake = readFile(rd.loc[rd['desc'] == 'Not-Real-Other'], data_dir, 1)
-    real = readFile(rd.loc[rd['desc'] == 'Real'], data_dir, 0)
+    fake = readFile(rd.loc[rd['desc'] == 'Not-Real-Other'], data_dir, 0)
+    real = readFile(rd.loc[rd['desc'] == 'Real'], data_dir, 1)
     data = pd.concat([fake, real]).reset_index(drop = True)
     # suffle to prevent bias
     data = shuffle(data)
     data = data.reset_index(drop=True)
-    data['isFake'] = data['isFake'].astype(int) 
+    data['label'] = data['label'].astype(int) 
     return data
     
-def readFile(df, data_dir, isFake):
-    column_names = ['text', 'isFake']
+def readFile(df, data_dir, label):
+    column_names = ['text', 'label']
     news_data = pd.DataFrame(columns = column_names)
     
     for index, row in df.iterrows():
         txt = pd.read_csv(data_dir+row['id'], sep='\t', quoting=csv.QUOTE_NONE, encoding='utf-8')
-        news_data = news_data.append({'text':txt, 'isFake':isFake}, ignore_index=True)
+        news_data = news_data.append({'text':txt, 'label':label}, ignore_index=True)
     return news_data
 
 
@@ -75,7 +75,7 @@ from sklearn.metrics import accuracy_score
 # Split the data into a training and test set.
 def split_data(data, labels):
 #     X_train,X_test,y_train,y_test = train_test_split(data['text'], data.target, test_size=0.2, random_state=42)
-    return train_test_split(data.text, data.isFake, test_size=0.2, random_state=42, shuffle="true")
+    return train_test_split(data.text, data.label, test_size=0.2, random_state=42, shuffle="true")
 
 # X_train,X_test,y_train,y_test = train_test_split(data['text'], data.target, test_size=0.2, random_state=42)
 
